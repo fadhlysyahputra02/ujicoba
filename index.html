@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>WAR Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 70px;
+        }
+        input, button {
+            font-size: 18px;
+            padding: 10px;
+            margin: 5px;
+        }
+        button:disabled {
+            background: gray;
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        #countdown {
+            font-size: 22px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>WAR TIKET SIMULATOR</h1>
+
+    <div>
+        <label>Jam Buka (HH:MM:SS)</label><br>
+        <input id="timeInput" type="text" placeholder="17:44:00">
+        <button id="setBtn">SET JAM WAR</button>
+    </div>
+
+    <p>Jam WAR: <b id="targetTime">-</b></p>
+    <p id="countdown">Menunggu...</p>
+
+    <button id="warBtn" disabled>BELI TIKET</button>
+
+<script>
+const timeInput   = document.getElementById("timeInput");
+const setBtn      = document.getElementById("setBtn");
+const warBtn      = document.getElementById("warBtn");
+const targetLabel = document.getElementById("targetTime");
+const countdown   = document.getElementById("countdown");
+
+let targetDate = null;
+
+function isValidTime(str) {
+    return /^\d{2}:\d{2}:\d{2}$/.test(str);
+}
+
+setBtn.addEventListener("click", () => {
+    const val = timeInput.value.trim();
+
+    if (!isValidTime(val)) {
+        alert("Format harus HH:MM:SS");
+        return;
+    }
+
+    const [h, m, s] = val.split(":").map(Number);
+
+    const now = new Date();
+    targetDate = new Date();
+    targetDate.setHours(h, m, s, 0);
+
+    // kalau jam sudah lewat → besok
+    if (targetDate <= now) {
+        targetDate.setDate(targetDate.getDate() + 1);
+    }
+
+    targetLabel.innerText = val;
+    countdown.innerText = "Countdown dimulai...";
+    warBtn.disabled = true;
+});
+
+setInterval(() => {
+    if (!targetDate) return;
+
+    const now = new Date();
+    const diff = targetDate - now;
+
+    if (diff <= 0) {
+        warBtn.disabled = false;
+        countdown.innerText = "WAR OPEN!";
+        return;
+    }
+
+    const ms = diff % 1000;
+    const totalSec = Math.floor(diff / 1000);
+    const s = totalSec % 60;
+    const m = Math.floor(totalSec / 60) % 60;
+    const h = Math.floor(totalSec / 3600);
+
+    countdown.innerText =
+        `H-${String(h).padStart(2,"0")}:` +
+        `${String(m).padStart(2,"0")}:` +
+        `${String(s).padStart(2,"0")}.` +
+        `${String(ms).padStart(3,"0")}`;
+
+}, 50); // 🔥 20fps (50ms)
+
+warBtn.addEventListener("click", () => {
+    window.location.href = "page2.html";
+});
+</script>
+
+</body>
+</html>

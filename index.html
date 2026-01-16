@@ -3,43 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <title>WAR Simulator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .card {
+            background: #111827;
+            padding: 30px 35px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 15px 40px rgba(0,0,0,.4);
             text-align: center;
-            margin-top: 70px;
         }
-        input, button {
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+
+        label {
+            font-size: 14px;
+            opacity: .85;
+        }
+
+        input {
+            width: 100%;
+            margin-top: 8px;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 14px;
+            padding: 14px;
+            font-size: 16px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: .25s ease;
+        }
+
+        #setBtn {
+            background: #2563eb;
+            color: #fff;
+        }
+
+        #setBtn:hover {
+            background: #1d4ed8;
+        }
+
+        #warBtn {
+            margin-top: 20px;
+            background: #16a34a;
+            color: #fff;
             font-size: 18px;
-            padding: 10px;
-            margin: 5px;
         }
+
+        #warBtn:hover:not(:disabled) {
+            background: #15803d;
+            transform: scale(1.02);
+        }
+
         button:disabled {
-            background: gray;
-            color: #ccc;
+            background: #374151;
+            color: #9ca3af;
             cursor: not-allowed;
         }
-        #countdown {
-            font-size: 22px;
+
+        .info {
             margin-top: 15px;
+            font-size: 14px;
+            opacity: .85;
+        }
+
+        #countdown {
+            margin-top: 18px;
+            font-size: 22px;
             font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .version {
+            position: fixed;
+            bottom: 10px;
+            right: 15px;
+            font-size: 12px;
+            opacity: .6;
         }
     </style>
 </head>
 <body>
 
-    <h1>WAR TIKET SIMULATOR</h1>
+<div class="card">
+    <h1>🎟️ WAR TIKET SIMULATOR</h1>
 
-    <div>
-        <label>Jam Buka (HH:MM:SS)</label><br>
-        <input id="timeInput" type="text" placeholder="17:44:00">
-        <button id="setBtn">SET JAM WAR</button>
+    <label>Jam Buka (HH:MM:SS)</label>
+    <input id="timeInput" type="text" placeholder="17:44:00">
+
+    <button id="setBtn">SET JAM WAR</button>
+
+    <div class="info">
+        Jam WAR: <b id="targetTime">-</b>
     </div>
 
-    <p>Jam WAR: <b id="targetTime">-</b></p>
-    <p id="countdown">Menunggu...</p>
+    <div id="countdown">Menunggu...</div>
 
     <button id="warBtn" disabled>BELI TIKET</button>
+</div>
+
+<div class="version">Version 1.0.0</div>
 
 <script>
 const timeInput   = document.getElementById("timeInput");
@@ -50,77 +141,68 @@ const countdown   = document.getElementById("countdown");
 
 let targetDate = null;
 
-/* ================= UTIL ================= */
 function isValidTime(str) {
     return /^\d{2}:\d{2}:\d{2}$/.test(str);
 }
 
-/* ================= LOAD STATE ================= */
+/* LOAD STATE */
 window.addEventListener("load", () => {
     const savedTime = localStorage.getItem("warTime");
-
     if (!savedTime) return;
 
     const [h, m, s] = savedTime.split(":").map(Number);
     targetDate = new Date();
     targetDate.setHours(h, m, s, 0);
 
+    targetLabel.innerText = savedTime;
+
     const now = new Date();
     if (targetDate <= now) {
-        // ⛔ tombol baru aktif SETELAH refresh & waktu lewat
         warBtn.disabled = false;
-        countdown.innerText = "WAR OPEN (SETELAH REFRESH)";
+        countdown.innerText = "WAR OPEN (REFRESH SUCCESS)";
     } else {
         warBtn.disabled = true;
-        targetLabel.innerText = savedTime;
         countdown.innerText = "Menunggu WAR...";
     }
 });
 
-/* ================= SET JAM ================= */
+/* SET JAM */
 setBtn.addEventListener("click", () => {
     const val = timeInput.value.trim();
-
     if (!isValidTime(val)) {
         alert("Format harus HH:MM:SS");
         return;
     }
 
     const [h, m, s] = val.split(":").map(Number);
-
-    const now = new Date();
     targetDate = new Date();
     targetDate.setHours(h, m, s, 0);
 
-    if (targetDate <= now) {
+    if (targetDate <= new Date()) {
         targetDate.setDate(targetDate.getDate() + 1);
     }
 
     localStorage.setItem("warTime", val);
-
     targetLabel.innerText = val;
     warBtn.disabled = true;
     countdown.innerText = "Countdown dimulai...";
 });
 
-/* ================= COUNTDOWN ================= */
+/* COUNTDOWN */
 setInterval(() => {
     if (!targetDate) return;
 
-    const now = new Date();
-    const diff = targetDate - now;
-
+    const diff = targetDate - new Date();
     if (diff <= 0) {
-        // ⛔ jangan enable di sini
         countdown.innerText = "WAR OPEN! REFRESH PAGE 🔄";
         return;
     }
 
     const ms = diff % 1000;
-    const totalSec = Math.floor(diff / 1000);
-    const s = totalSec % 60;
-    const m = Math.floor(totalSec / 60) % 60;
-    const h = Math.floor(totalSec / 3600);
+    const t  = Math.floor(diff / 1000);
+    const s  = t % 60;
+    const m  = Math.floor(t / 60) % 60;
+    const h  = Math.floor(t / 3600);
 
     countdown.innerText =
         `H-${String(h).padStart(2,"0")}:` +
@@ -129,7 +211,7 @@ setInterval(() => {
         `${String(ms).padStart(3,"0")}`;
 }, 50);
 
-/* ================= ACTION ================= */
+/* ACTION */
 warBtn.addEventListener("click", () => {
     window.location.href = "page2.html";
 });

@@ -50,10 +50,34 @@ const countdown   = document.getElementById("countdown");
 
 let targetDate = null;
 
+/* ================= UTIL ================= */
 function isValidTime(str) {
     return /^\d{2}:\d{2}:\d{2}$/.test(str);
 }
 
+/* ================= LOAD STATE ================= */
+window.addEventListener("load", () => {
+    const savedTime = localStorage.getItem("warTime");
+
+    if (!savedTime) return;
+
+    const [h, m, s] = savedTime.split(":").map(Number);
+    targetDate = new Date();
+    targetDate.setHours(h, m, s, 0);
+
+    const now = new Date();
+    if (targetDate <= now) {
+        // ⛔ tombol baru aktif SETELAH refresh & waktu lewat
+        warBtn.disabled = false;
+        countdown.innerText = "WAR OPEN (SETELAH REFRESH)";
+    } else {
+        warBtn.disabled = true;
+        targetLabel.innerText = savedTime;
+        countdown.innerText = "Menunggu WAR...";
+    }
+});
+
+/* ================= SET JAM ================= */
 setBtn.addEventListener("click", () => {
     const val = timeInput.value.trim();
 
@@ -68,16 +92,18 @@ setBtn.addEventListener("click", () => {
     targetDate = new Date();
     targetDate.setHours(h, m, s, 0);
 
-    // kalau jam sudah lewat → besok
     if (targetDate <= now) {
         targetDate.setDate(targetDate.getDate() + 1);
     }
 
+    localStorage.setItem("warTime", val);
+
     targetLabel.innerText = val;
-    countdown.innerText = "Countdown dimulai...";
     warBtn.disabled = true;
+    countdown.innerText = "Countdown dimulai...";
 });
 
+/* ================= COUNTDOWN ================= */
 setInterval(() => {
     if (!targetDate) return;
 
@@ -85,8 +111,8 @@ setInterval(() => {
     const diff = targetDate - now;
 
     if (diff <= 0) {
-        warBtn.disabled = false;
-        countdown.innerText = "WAR OPEN!";
+        // ⛔ jangan enable di sini
+        countdown.innerText = "WAR OPEN! REFRESH PAGE 🔄";
         return;
     }
 
@@ -101,9 +127,9 @@ setInterval(() => {
         `${String(m).padStart(2,"0")}:` +
         `${String(s).padStart(2,"0")}.` +
         `${String(ms).padStart(3,"0")}`;
+}, 50);
 
-}, 50); // 🔥 20fps (50ms)
-
+/* ================= ACTION ================= */
 warBtn.addEventListener("click", () => {
     window.location.href = "page2.html";
 });

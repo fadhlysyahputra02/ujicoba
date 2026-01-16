@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>WAR Simulator</title>
+    <title>WAR Flash Sale</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
@@ -114,23 +114,23 @@
 <body>
 
 <div class="card">
-    <h1>🎟️ WAR TIKET SIMULATOR</h1>
+    <h1>🎟️ BOT Flash Sale</h1>
 
-    <label>Jam Buka (HH:MM:SS)</label>
-    <input id="timeInput" type="text" placeholder="17:44:00">
+    <label>Jam Buka</label>
+    <input id="timeInput" type="text" placeholder="00:00:00">
 
-    <button id="setBtn">SET JAM WAR</button>
+    <button id="setBtn">SET JAM</button>
 
     <div class="info">
-        Jam WAR: <b id="targetTime">-</b>
+        Jam Mulai: <b id="targetTime">-</b>
     </div>
 
     <div id="countdown">Menunggu...</div>
 
-    <button id="warBtn" disabled>BELI TIKET</button>
+    <button id="warBtn" disabled>SUBMIT</button>
 </div>
 
-<div class="version">Version 1.0.0</div>
+<div class="version">Version 1.0.1</div>
 
 <script>
 const timeInput   = document.getElementById("timeInput");
@@ -194,7 +194,7 @@ setInterval(() => {
 
     const diff = targetDate - new Date();
     if (diff <= 0) {
-        countdown.innerText = "WAR OPEN! REFRESH PAGE 🔄";
+        countdown.innerText = "READY! REFRESH PAGE 🔄";
         return;
     }
 

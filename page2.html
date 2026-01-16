@@ -3,18 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <title>WAR Simulator - Page 2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .card {
+            background: #111827;
+            padding: 35px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 15px 40px rgba(0,0,0,.4);
             text-align: center;
-            margin-top: 100px;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 14px;
+            opacity: .85;
+            margin-bottom: 25px;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            background: #16a34a;
+            color: #fff;
+            transition: .25s ease;
+        }
+
+        button:hover {
+            background: #15803d;
+            transform: scale(1.03);
+        }
+
+        .version {
+            position: fixed;
+            bottom: 10px;
+            right: 15px;
+            font-size: 12px;
+            opacity: .6;
         }
     </style>
 </head>
 <body>
 
-    <h1>🎉 WAR BERHASIL</h1>
-    <p>Bot berhasil klik tombol tepat waktu.</p>
+<div class="card">
+    <h1>🎯 TEST TARGET BUTTON</h1>
+    <p>Halaman ini hanya memiliki <b>1 tombol</b><br>
+       Cocok untuk testing bot Selenium</p>
+
+    <!-- 🔥 TOMBOL TARGET -->
+    <button id="targetBtn">
+        TARGET BUTTON
+    </button>
+</div>
+
+<div class="version">Version 1.0.0</div>
+
+<script>
+document.getElementById("targetBtn").addEventListener("click", () => {
+    alert("✅ BUTTON BERHASIL DIKLIK BOT!");
+});
+</script>
 
 </body>
 </html>

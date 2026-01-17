@@ -122,37 +122,74 @@
 
 </div>
 
-<div class="version">Version 1.2.0</div>
+<div class="version">Version 1.0.3</div>
 
 <script>
-/* ===== DURASI LOADING 1 - 2 MENIT ===== */
-const minTime = 10_000;   // 1 menit
-const maxTime = 20_000;  // 2 menit
-const totalTime = Math.floor(Math.random() * (maxTime - minTime + 1)) + minTime;
-
-const startTime = Date.now();
-const progressBar = document.getElementById("progressBar");
+const progressBar  = document.getElementById("progressBar");
 const progressText = document.getElementById("progressText");
+const loadingBox   = document.getElementById("loading");
+const contentBox   = document.getElementById("content");
+const targetBtn    = document.getElementById("targetBtn");
 
-const timer = setInterval(() => {
-    const elapsed = Date.now() - startTime;
-    let percent = Math.floor((elapsed / totalTime) * 100);
+/* ===== CONFIG (1–2 menit) ===== */
+const MIN_TIME = 10_000; // demo: 10 detik
+const MAX_TIME = 20_000; // demo: 20 detik
 
-    if (percent >= 100) {
-        percent = 100;
-        clearInterval(timer);
+/* ===== STORAGE KEY ===== */
+const START_KEY = "war_loading_start";
+const DUR_KEY   = "war_loading_duration";
+const DONE_KEY  = "war_loading_done";
 
-        document.getElementById("loading").classList.add("hidden");
-        document.getElementById("content").classList.remove("hidden");
-    }
+/* ===== INIT ===== */
+let startTime = localStorage.getItem(START_KEY);
+let duration  = localStorage.getItem(DUR_KEY);
+let isDone    = localStorage.getItem(DONE_KEY) === "true";
 
-    progressBar.style.width = percent + "%";
-    progressText.innerText = percent + "%";
-}, 300);
+/* ===== FIRST VISIT ===== */
+if (!startTime || !duration) {
+    startTime = Date.now();
+    duration  = Math.floor(Math.random() * (MAX_TIME - MIN_TIME + 1)) + MIN_TIME;
+
+    localStorage.setItem(START_KEY, startTime);
+    localStorage.setItem(DUR_KEY, duration);
+}
+
+/* ===== DEFAULT STATE ===== */
+targetBtn.disabled = true;
+contentBox.classList.remove("hidden");
+
+/* ===== IF ALREADY DONE ===== */
+if (isDone) {
+    loadingBox.classList.add("hidden");
+    targetBtn.disabled = false;
+} else {
+    startProgress();
+}
+
+/* ===== PROGRESS LOOP ===== */
+function startProgress() {
+    const timer = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        let percent = Math.floor((elapsed / duration) * 100);
+
+        if (percent >= 100) {
+            percent = 100;
+            clearInterval(timer);
+
+            localStorage.setItem(DONE_KEY, "true");
+
+            loadingBox.classList.add("hidden");
+            targetBtn.disabled = false;
+        }
+
+        progressBar.style.width = percent + "%";
+        progressText.innerText = percent + "%";
+    }, 300);
+}
 
 /* ===== ACTION ===== */
-document.addEventListener("click", (e) => {
-    if (e.target.id === "targetBtn") {
+targetBtn.addEventListener("click", () => {
+    if (!targetBtn.disabled) {
         window.location.href = "page3.html";
     }
 });

@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             min-height: 100vh;
@@ -57,6 +61,32 @@
             transform: scale(1.03);
         }
 
+        /* ===== PROGRESS BAR ===== */
+        .progress-wrap {
+            background: #374151;
+            border-radius: 12px;
+            overflow: hidden;
+            height: 18px;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #22c55e, #4ade80);
+            transition: width .3s ease;
+        }
+
+        .progress-text {
+            margin-top: 10px;
+            font-size: 14px;
+            opacity: .9;
+        }
+
+        .hidden {
+            display: none;
+        }
+
         .version {
             position: fixed;
             bottom: 10px;
@@ -69,21 +99,62 @@
 <body>
 
 <div class="card">
-    <h1>🎯 TEST TARGET BUTTON</h1>
-    <p>Halaman ini hanya memiliki <b>1 tombol</b><br>
-       Cocok untuk testing bot Selenium</p>
 
-    <!-- 🔥 TOMBOL TARGET -->
-    <button id="targetBtn">
-        TARGET BUTTON
-    </button>
+    <!-- ===== LOADING STATE ===== -->
+    <div id="loading">
+        <h1>⏳ MENUNGGU ANTRIAN</h1>
+        <p>Server sedang sibuk, mohon tunggu...</p>
+
+        <div class="progress-wrap">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="progress-text" id="progressText">0%</div>
+    </div>
+
+    <!-- ===== CONTENT STATE ===== -->
+    <div id="content" class="hidden">
+        <h1>🎯 TEST TARGET BUTTON</h1>
+        <p>Halaman ini hanya memiliki <b>1 tombol</b><br>
+           Cocok untuk testing bot Selenium</p>
+
+        <button id="targetBtn">TARGET BUTTON</button>
+    </div>
+
 </div>
 
-<div class="version">Version 1.0.0</div>
+<div class="version">Version 1.2.0</div>
 
 <script>
-document.getElementById("targetBtn").addEventListener("click", () => {
-    window.location.href = "page3.html";
+/* ===== DURASI LOADING 1 - 2 MENIT ===== */
+const minTime = 10_000;   // 1 menit
+const maxTime = 20_000;  // 2 menit
+const totalTime = Math.floor(Math.random() * (maxTime - minTime + 1)) + minTime;
+
+const startTime = Date.now();
+const progressBar = document.getElementById("progressBar");
+const progressText = document.getElementById("progressText");
+
+const timer = setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    let percent = Math.floor((elapsed / totalTime) * 100);
+
+    if (percent >= 100) {
+        percent = 100;
+        clearInterval(timer);
+
+        document.getElementById("loading").classList.add("hidden");
+        document.getElementById("content").classList.remove("hidden");
+    }
+
+    progressBar.style.width = percent + "%";
+    progressText.innerText = percent + "%";
+}, 300);
+
+/* ===== ACTION ===== */
+document.addEventListener("click", (e) => {
+    if (e.target.id === "targetBtn") {
+        window.location.href = "page3.html";
+    }
 });
 </script>
 

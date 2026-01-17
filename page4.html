@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>WAR Simulator - Page 3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .card {
+            background: #111827;
+            padding: 30px 35px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 460px;
+            box-shadow: 0 15px 40px rgba(0,0,0,.4);
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 13px;
+            opacity: .8;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 13px;
+            margin-top: 12px;
+            display: block;
+            opacity: .9;
+        }
+
+        input, select {
+            width: 100%;
+            margin-top: 6px;
+            padding: 12px;
+            font-size: 14px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #9ca3af;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            background: #2563eb;
+            color: #fff;
+            transition: .25s ease;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+            transform: scale(1.02);
+        }
+
+        .version {
+            position: fixed;
+            bottom: 10px;
+            right: 15px;
+            font-size: 12px;
+            opacity: .6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>🧾 FORM DATA DIRI</h1>
+    <div class="subtitle">Lengkapi data dengan benar untuk melanjutkan</div>
+
+    <label>Nama Lengkap</label>
+    <input type="text" id="nama" placeholder="Nama sesuai KTP">
+
+    <label>Nomor WhatsApp</label>
+    <input type="tel" id="wa" placeholder="08xxxxxxxxxx">
+
+    <label>Nomor KTP</label>
+    <input type="text" id="ktp" placeholder="16 digit NIK">
+
+    <label>Email</label>
+    <input type="email" id="email" placeholder="email@example.com">
+
+    <label>Jenis Kelamin</label>
+    <select id="jk">
+        <option value="">-- Pilih --</option>
+        <option value="L">Laki-laki</option>
+        <option value="P">Perempuan</option>
+    </select>
+
+    <button id="submitBtn">SUBMIT DATA</button>
+</div>
+
+<div class="version">Version 1.0.0</div>
+
+<script>
+document.getElementById("submitBtn").addEventListener("click", () => {
+    alert("✅ FORM TERKIRIM (SIMULASI)");
+});
+</script>
+
+</body>
+</html>

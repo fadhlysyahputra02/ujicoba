@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
+        * { box-sizing: border-box; }
+
         body {
             margin: 0;
             min-height: 100vh;
@@ -17,37 +19,56 @@
             color: #fff;
         }
 
-        .card {
-            background: #111827;
-            padding: 30px 35px;
-            border-radius: 16px;
+        .container {
             width: 100%;
-            max-width: 460px;
-            box-shadow: 0 15px 40px rgba(0,0,0,.4);
+            max-width: 520px;
+            padding: 20px;
         }
 
         h1 {
             text-align: center;
-            margin-top: 0;
-            margin-bottom: 5px;
-            font-size: 24px;
+            margin-bottom: 6px;
+            font-size: 26px;
         }
 
         .subtitle {
             text-align: center;
-            font-size: 13px;
-            opacity: .8;
-            margin-bottom: 20px;
+            font-size: 14px;
+            opacity: .85;
+            margin-bottom: 25px;
+        }
+
+        .ticket-card {
+            background: #111827;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 18px;
+            box-shadow: 0 12px 35px rgba(0,0,0,.4);
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .ticket-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .ticket-price {
+            font-size: 15px;
+            color: #22c55e;
         }
 
         label {
             font-size: 13px;
-            margin-top: 12px;
-            display: block;
             opacity: .9;
         }
 
-        input, select {
+        select {
             width: 100%;
             margin-top: 6px;
             padding: 12px;
@@ -57,17 +78,18 @@
             outline: none;
         }
 
-        input::placeholder {
-            color: #9ca3af;
+        /* GLOBAL BUY */
+        .buy-global {
+            margin-top: 25px;
+            display: flex;
+            justify-content: flex-end;
         }
 
         button {
-            width: 100%;
-            margin-top: 20px;
-            padding: 14px;
+            padding: 14px 34px;
             font-size: 16px;
             font-weight: bold;
-            border-radius: 12px;
+            border-radius: 14px;
             border: none;
             cursor: pointer;
             background: #2563eb;
@@ -75,9 +97,15 @@
             transition: .25s ease;
         }
 
-        button:hover {
+        button:disabled {
+            background: #374151;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        button:hover:not(:disabled) {
             background: #1d4ed8;
-            transform: scale(1.02);
+            transform: scale(1.05);
         }
 
         .version {
@@ -91,38 +119,89 @@
 </head>
 <body>
 
-<div class="card">
-    <h1>🧾 FORM DATA DIRI</h1>
-    <div class="subtitle">Lengkapi data dengan benar untuk melanjutkan</div>
+<div class="container">
+    <h1>🎫 PILIH TIKET</h1>
+    <div class="subtitle">Pilih kategori & jumlah tiket</div>
 
-    <label>Nama Lengkap</label>
-    <input type="text" id="nama" placeholder="Nama sesuai KTP">
+    <!-- VVIP -->
+    <div class="ticket-card">
+        <div class="ticket-header">
+            <div class="ticket-title">VVIP</div>
+            <div class="ticket-price">Rp 2.500.000</div>
+        </div>
 
-    <label>Nomor WhatsApp</label>
-    <input type="tel" id="wa" placeholder="08xxxxxxxxxx">
+        <label>Jumlah Tiket</label>
+        <select onchange="onSelectChange(this)">
+            <option value="">-- Pilih --</option>
+            <option value="1">1 Tiket</option>
+            <option value="2">2 Tiket</option>
+            <option value="3">3 Tiket</option>
+        </select>
+    </div>
 
-    <label>Nomor KTP</label>
-    <input type="text" id="ktp" placeholder="16 digit NIK">
+    <!-- VIP -->
+    <div class="ticket-card">
+        <div class="ticket-header">
+            <div class="ticket-title">VIP</div>
+            <div class="ticket-price">Rp 1.500.000</div>
+        </div>
 
-    <label>Email</label>
-    <input type="email" id="email" placeholder="email@example.com">
+        <label>Jumlah Tiket</label>
+        <select onchange="onSelectChange(this)">
+            <option value="">-- Pilih --</option>
+            <option value="1">1 Tiket</option>
+            <option value="2">2 Tiket</option>
+            <option value="3">3 Tiket</option>
+            <option value="4">4 Tiket</option>
+        </select>
+    </div>
 
-    <label>Jenis Kelamin</label>
-    <select id="jk">
-        <option value="">-- Pilih --</option>
-        <option value="L">Laki-laki</option>
-        <option value="P">Perempuan</option>
-    </select>
+    <!-- REGULAR -->
+    <div class="ticket-card">
+        <div class="ticket-header">
+            <div class="ticket-title">REGULAR</div>
+            <div class="ticket-price">Rp 750.000</div>
+        </div>
 
-    <button id="submitBtn">SUBMIT DATA</button>
+        <label>Jumlah Tiket</label>
+        <select onchange="onSelectChange(this)">
+            <option value="">-- Pilih --</option>
+            <option value="1">1 Tiket</option>
+            <option value="2">2 Tiket</option>
+            <option value="3">3 Tiket</option>
+            <option value="4">4 Tiket</option>
+            <option value="5">5 Tiket</option>
+        </select>
+    </div>
+
+    <!-- GLOBAL BUY BUTTON -->
+    <div class="buy-global">
+        <button id="buyBtn" disabled onclick="goNext()">BUY</button>
+    </div>
+
 </div>
 
-<div class="version">Version 1.0.0</div>
+<div class="version">Version 1.1.0</div>
 
 <script>
-document.getElementById("submitBtn").addEventListener("click", () => {
-    alert("✅ FORM TERKIRIM (SIMULASI)");
-});
+function onSelectChange(activeSelect) {
+    const selects = document.querySelectorAll("select");
+
+    // hanya 1 kategori aktif (realistic)
+    selects.forEach(sel => {
+        if (sel !== activeSelect) {
+            sel.value = "";
+        }
+    });
+
+    // enable BUY jika ada yang dipilih
+    const hasSelection = [...selects].some(s => s.value !== "");
+    document.getElementById("buyBtn").disabled = !hasSelection;
+}
+
+function goNext() {
+    window.location.href = "page4.html";
+}
 </script>
 
 </body>

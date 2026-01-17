@@ -66,16 +66,43 @@
         label {
             font-size: 13px;
             opacity: .9;
+            display: block;
+            margin-bottom: 6px;
         }
 
-        select {
+        select, input {
             width: 100%;
-            margin-top: 6px;
             padding: 12px;
             font-size: 14px;
             border-radius: 10px;
             border: none;
             outline: none;
+        }
+
+        /* Counter button */
+        .counter {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .counter button {
+            width: 36px;
+            height: 36px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .counter input {
+            width: 60px;
+            text-align: center;
+            padding: 8px;
         }
 
         /* GLOBAL BUY */
@@ -85,7 +112,7 @@
             justify-content: flex-end;
         }
 
-        button {
+        button.buy-btn {
             padding: 14px 34px;
             font-size: 16px;
             font-weight: bold;
@@ -97,13 +124,13 @@
             transition: .25s ease;
         }
 
-        button:disabled {
+        button.buy-btn:disabled {
             background: #374151;
             color: #9ca3af;
             cursor: not-allowed;
         }
 
-        button:hover:not(:disabled) {
+        button.buy-btn:hover:not(:disabled) {
             background: #1d4ed8;
             transform: scale(1.05);
         }
@@ -123,80 +150,86 @@
     <h1>🎫 PILIH TIKET</h1>
     <div class="subtitle">Pilih kategori & jumlah tiket</div>
 
-    <!-- VVIP -->
-    <div class="ticket-card">
-        <div class="ticket-header">
-            <div class="ticket-title">VVIP</div>
-            <div class="ticket-price">Rp 2.500.000</div>
-        </div>
-
-        <label>Jumlah Tiket</label>
-        <select onchange="onSelectChange(this)">
-            <option value="">-- Pilih --</option>
-            <option value="1">1 Tiket</option>
-            <option value="2">2 Tiket</option>
-            <option value="3">3 Tiket</option>
-        </select>
-    </div>
-
-    <!-- VIP -->
+    <!-- VIP (dropdown) -->
     <div class="ticket-card">
         <div class="ticket-header">
             <div class="ticket-title">VIP</div>
-            <div class="ticket-price">Rp 1.500.000</div>
+            <div class="ticket-price">Rp 2.500.000</div>
         </div>
-
         <label>Jumlah Tiket</label>
-        <select onchange="onSelectChange(this)">
+        <select onchange="onChange()">
             <option value="">-- Pilih --</option>
             <option value="1">1 Tiket</option>
             <option value="2">2 Tiket</option>
             <option value="3">3 Tiket</option>
-            <option value="4">4 Tiket</option>
         </select>
     </div>
 
-    <!-- REGULAR -->
+    <!-- Cat1 (- + counter) -->
     <div class="ticket-card">
         <div class="ticket-header">
-            <div class="ticket-title">REGULAR</div>
+            <div class="ticket-title">Cat1</div>
+            <div class="ticket-price">Rp 1.500.000</div>
+        </div>
+        <label>Jumlah Tiket</label>
+        <div class="counter">
+            <button type="button" onclick="decrement('cat1')">-</button>
+            <input type="number" id="cat1" value="0" min="0" readonly>
+            <button type="button" onclick="increment('cat1')">+</button>
+        </div>
+    </div>
+
+    <!-- Cat2 (manual input) -->
+    <div class="ticket-card">
+        <div class="ticket-header">
+            <div class="ticket-title">Cat2</div>
             <div class="ticket-price">Rp 750.000</div>
         </div>
-
         <label>Jumlah Tiket</label>
-        <select onchange="onSelectChange(this)">
-            <option value="">-- Pilih --</option>
-            <option value="1">1 Tiket</option>
-            <option value="2">2 Tiket</option>
-            <option value="3">3 Tiket</option>
-            <option value="4">4 Tiket</option>
-            <option value="5">5 Tiket</option>
-        </select>
+        <input type="number" id="cat2" value="" min="0" placeholder="Masukkan jumlah tiket" oninput="onChange()">
     </div>
 
     <!-- GLOBAL BUY BUTTON -->
     <div class="buy-global">
-        <button id="buyBtn" disabled onclick="goNext()">BUY</button>
+        <button id="buyBtn" class="buy-btn" disabled onclick="goNext()">BUY</button>
     </div>
 
 </div>
 
-<div class="version">Version 1.0.3</div>
+<div class="version">Version 1.0.5</div>
 
 <script>
-function onSelectChange(activeSelect) {
-    const selects = document.querySelectorAll("select");
+function onChange() {
+    const vip = document.querySelector(".ticket-card select").value;
+    const cat1 = parseInt(document.getElementById("cat1").value) || 0;
+    const cat2 = parseInt(document.getElementById("cat2").value) || 0;
 
-    // hanya 1 kategori aktif (realistic)
-    selects.forEach(sel => {
-        if (sel !== activeSelect) {
-            sel.value = "";
-        }
-    });
+    // hanya 1 kategori aktif
+    if (vip) {
+        document.getElementById("cat1").value = 0;
+        document.getElementById("cat2").value = "";
+    } else if (cat1 > 0) {
+        document.querySelector(".ticket-card select").value = "";
+        document.getElementById("cat2").value = "";
+    } else if (cat2 > 0) {
+        document.querySelector(".ticket-card select").value = "";
+        document.getElementById("cat1").value = 0;
+    }
 
-    // enable BUY jika ada yang dipilih
-    const hasSelection = [...selects].some(s => s.value !== "");
-    document.getElementById("buyBtn").disabled = !hasSelection;
+    const buyBtn = document.getElementById("buyBtn");
+    buyBtn.disabled = !(vip || cat1 > 0 || cat2 > 0);
+}
+
+function increment(id) {
+    const input = document.getElementById(id);
+    input.value = parseInt(input.value) + 1;
+    onChange();
+}
+
+function decrement(id) {
+    const input = document.getElementById(id);
+    if (parseInt(input.value) > 0) input.value = parseInt(input.value) - 1;
+    onChange();
 }
 
 function goNext() {
